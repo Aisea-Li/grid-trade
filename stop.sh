@@ -16,6 +16,7 @@ then
     do
         echo "${JAR_NAME} is already running"
         sleep 1s
+        is_run=`ps -f ${pid} | grep ${JAR_NAME} | wc -l`
     done
 fi
 
