@@ -12,7 +12,7 @@ if [ -f "${PID_FILE}" ]
 then
     pid=`cat ${PID_FILE}`
     is_run=`ps -f ${pid} | grep ${JAR_NAME} | wc -l`
-    until [ ${is_run} -gt 0 ]
+    while [ ${is_run} -gt 0 ]
     do
         echo "${JAR_NAME} is already running"
         sleep 1s
