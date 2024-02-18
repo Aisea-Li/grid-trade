@@ -11,6 +11,7 @@ import com.example.gridtrade.entity.response.Order;
 import com.example.gridtrade.entity.response.Page;
 import com.example.gridtrade.entity.response.Response;
 import com.example.gridtrade.trade.platform.TradePlatform;
+import com.example.gridtrade.utils.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -64,7 +65,11 @@ public class MexcTradePlatform extends TradePlatform {
                 .quantity(String.valueOf(quantity))
                 .build();
         Response<String> res = mexcWebClient.placeOrder(req);
-        return Objects.nonNull(res) ? res.getData() : null;
+        if (ResponseUtils.hasData(res)) {
+            return res.getData();
+        } else {
+            return null;
+        }
     }
 
     @Override

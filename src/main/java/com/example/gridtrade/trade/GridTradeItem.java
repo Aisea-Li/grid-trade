@@ -99,8 +99,8 @@ public class GridTradeItem {
         }
     }
 
-    public void buy() {
-        currentOrderId = tradePlatform.placeOrder(
+    private void buy() {
+        String orderId = tradePlatform.placeOrder(
                 currency,
                 market,
                 TradeType.BUY,
@@ -108,12 +108,17 @@ public class GridTradeItem {
                 buyPrice,
                 quantity
         );
+        if (StringUtils.isBlank(orderId)) {
+            log.error("buy,fail,code:{},order id:{}", code, currentOrderId);
+            return;
+        }
+        currentOrderId = orderId;
         selling = false;
-        log.info("buy,code:{},order id:{}", code, this.currentOrderId);
+        log.info("buy,code:{},order id:{}", code, currentOrderId);
     }
 
-    public void sell() {
-        currentOrderId = tradePlatform.placeOrder(
+    private void sell() {
+        String orderId = tradePlatform.placeOrder(
                 currency,
                 market,
                 TradeType.SELL,
@@ -121,6 +126,11 @@ public class GridTradeItem {
                 sellPrice,
                 quantity
         );
+        if (StringUtils.isBlank(orderId)) {
+            log.error("sell,fail,code:{},order id:{}", code, currentOrderId);
+            return;
+        }
+        currentOrderId = orderId;
         selling = true;
         log.info("sell,code:{},order id:{}", code, currentOrderId);
     }
