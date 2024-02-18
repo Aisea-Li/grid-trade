@@ -3,7 +3,6 @@ package com.example.gridtrade.client;
 import com.example.gridtrade.entity.response.OrderRes;
 import com.example.gridtrade.entity.response.QueryOrderRes;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,32 +46,5 @@ public interface MexcApiClient {
 
 @Slf4j
 @Component
-class MexcApiClientFallbackFactory implements FallbackFactory<MexcApiClient> {
-
-    @Override
-    public MexcApiClient create(Throwable cause) {
-        log.warn("MexcApiClient,request fail,msg:" + cause.getMessage(), cause);
-        return new MexcApiClient() {
-
-            @Override
-            public OrderRes orderTest() {
-                return null;
-            }
-
-            @Override
-            public String canTradeSymbols() {
-                return null;
-            }
-
-            @Override
-            public OrderRes placeOrder(String symbol, String side, String type, String quantity, String quoteOrderQty, String price, String newClientOrderId) {
-                return null;
-            }
-
-            @Override
-            public QueryOrderRes queryOrder(String symbol, String origClientOrderId, String orderId) {
-                return null;
-            }
-        };
-    }
+class MexcApiClientFallbackFactory extends FeignAbstractFallbackFactory<MexcApiClient> {
 }

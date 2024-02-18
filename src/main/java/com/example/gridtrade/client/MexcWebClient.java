@@ -7,7 +7,6 @@ import com.example.gridtrade.entity.response.Order;
 import com.example.gridtrade.entity.response.Page;
 import com.example.gridtrade.entity.response.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -102,41 +101,5 @@ public interface MexcWebClient {
 
 @Slf4j
 @Component
-class MexcWebClientFallbackFactory implements FallbackFactory<MexcWebClient> {
-
-    @Override
-    public MexcWebClient create(Throwable cause) {
-        log.warn("MexcWebClient,request fail,msg:" + cause.getMessage(), cause);
-        return new MexcWebClient() {
-            @Override
-            public Response<String> placeOrder(PlaceOrderReq req) {
-                return null;
-            }
-
-            @Override
-            public Response<Page<CurrentOrder>> queryCurrentOrders(String currency, String market, String orderTypes, Integer pageNum, Integer pageSize) {
-                return null;
-            }
-
-            @Override
-            public Response<Page<HistoryOrder>> queryHistoryOrders(String states, Long startTime, Long endTime, Integer pageNum, Integer pageSize) {
-                return null;
-            }
-
-            @Override
-            public Response<Order> queryOrderDetail(String orderId, String orderType) {
-                return null;
-            }
-
-            @Override
-            public Response<?> cancelOrder() {
-                return null;
-            }
-
-            @Override
-            public Response<?> validation() {
-                return null;
-            }
-        };
-    }
+class MexcWebClientFallbackFactory extends FeignAbstractFallbackFactory<MexcApiClient> {
 }
