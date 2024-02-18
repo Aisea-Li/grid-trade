@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+@Component
 @FeignClient(
         name = "mexcApiClient",
         url = "${mexc.api.url:https://api.mexc.co}",

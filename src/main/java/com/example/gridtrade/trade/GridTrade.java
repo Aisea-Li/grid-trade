@@ -87,9 +87,6 @@ public class GridTrade {
     }
 
     public void execute() {
-        if (!tradePlatform.refreshToken()) {
-            return;
-        }
         if (!tradePlatform.refreshCurrentOrder(currency, market, gridNum * 2)) {
             log.error("refresh current order fail.");
             return;

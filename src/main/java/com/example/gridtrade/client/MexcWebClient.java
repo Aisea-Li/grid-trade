@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
+@Component
 @FeignClient(
         name = "mexcWebClient",
         url = "${mexc.web.url:https://www.mexc.co}",

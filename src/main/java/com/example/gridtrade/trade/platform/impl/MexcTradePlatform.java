@@ -35,17 +35,6 @@ public class MexcTradePlatform extends TradePlatform {
     private final static int PAGE_SIZE = 100;
 
     @Override
-    public boolean refreshToken() {
-        Response response = mexcWebClient.validation();
-        if (Objects.nonNull(response) && response.isSuccess()) {
-            return true;
-        } else {
-            log.error("refresh token,fail,res:{}.", response);
-            return false;
-        }
-    }
-
-    @Override
     public TradeOrder queryOrder(String orderId, TradeOrderType tradeOrderType) {
         Response<Order> res = mexcWebClient.queryOrderDetail(orderId, tradeOrderType.getCode());
         if (Objects.isNull(res) || !res.hasData()) {

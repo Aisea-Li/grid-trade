@@ -11,8 +11,6 @@ public abstract class TradePlatform {
 
     protected Map<String, TradeOrder> currentOrderCache = new ConcurrentHashMap<>();
 
-    public abstract boolean refreshToken();
-
     public abstract boolean refreshCurrentOrder(String currency, String market, int num);
 
     public TradeOrder getCurrentOrder(String orderId) {
