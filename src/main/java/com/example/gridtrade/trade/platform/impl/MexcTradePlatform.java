@@ -6,20 +6,17 @@ import com.example.gridtrade.entity.enums.TradeOrderType;
 import com.example.gridtrade.entity.enums.TradeType;
 import com.example.gridtrade.entity.request.PlaceOrderReq;
 import com.example.gridtrade.entity.response.CurrentOrder;
-import com.example.gridtrade.entity.response.HistoryOrder;
 import com.example.gridtrade.entity.response.Order;
 import com.example.gridtrade.entity.response.Page;
 import com.example.gridtrade.entity.response.Response;
 import com.example.gridtrade.trade.platform.TradePlatform;
 import com.example.gridtrade.utils.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -64,7 +61,7 @@ public class MexcTradePlatform extends TradePlatform {
     @Override
     public boolean refreshCurrentOrder(String currency, String market, int num) {
         List<TradeOrder> currentOrderList = queryCurrentOrder(currency, market, num);
-        if (CollectionUtils.isEmpty(currentOrderList)) {
+        if (Objects.isNull(currentOrderList)) {
             return false;
         }
         this.currentOrderCache.clear();
@@ -86,40 +83,14 @@ public class MexcTradePlatform extends TradePlatform {
                     page,
                     PAGE_SIZE
             );
-            if (Objects.isNull(res) || !res.hasData()) {
+            if (!ResponseUtils.hasData(res)) {
                 log.error("query current order fail,res:{}", res);
-                return Collections.emptyList();
+                return null;
             }
             ret.addAll(
                     ListUtils.emptyIfNull(res.getData().getResultList())
                             .stream()
                             .map(CurrentOrder::toTradeOrder)
-                            .collect(Collectors.toList())
-            );
-            page++;
-        } while (page <= Math.min(maxPage, res.getData().getTotalPage()));
-        return ret;
-    }
-
-    protected List<TradeOrder> queryHistoryOrder(int num) {
-        List<TradeOrder> ret = new ArrayList<>();
-        int page = 1, maxPage = num / PAGE_SIZE + (num % PAGE_SIZE > 0 ? 1 : 0);
-        Response<Page<HistoryOrder>> res;
-        do {
-            res = mexcWebClient.queryHistoryOrders(
-                    "2,4",
-                    null,
-                    null,
-                    page,
-                    PAGE_SIZE
-            );
-            if (Objects.isNull(res) || !res.hasData()) {
-                return Collections.emptyList();
-            }
-            ret.addAll(
-                    ListUtils.emptyIfNull(res.getData().getResultList())
-                            .stream()
-                            .map(HistoryOrder::toTradeOrder)
                             .collect(Collectors.toList())
             );
             page++;
