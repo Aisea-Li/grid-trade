@@ -5,7 +5,7 @@
 MEXC主站地址: https://www.mexc.com  
 注册加入: https://www.mexc.com/register?inviteCode=1Nvr6
 
-q: 为什么选择MEXC做网格交易? 
+q: 为什么选择MEXC做网格交易?   
 a: 免现货交易手续费
 
 使用
