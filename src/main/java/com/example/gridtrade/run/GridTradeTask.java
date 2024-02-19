@@ -9,24 +9,34 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
-import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.locks.LockSupport;
-
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class TradeRunner implements CommandLineRunner {
+public class GridTradeTask {
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Autowired
     @Qualifier("mexcTradePlatform")
     private TradePlatform tradePlatform;
+
+    private GridTrade gridTrade;
+
+    private final static String START_FILE_PATH = "./grid-trade-start.json";
+    private final static String CACHE_FILE_PATH = "./grid-trade-cache.json";
+    private final static String SWITCH_FILE_PATH = "./switch.txt";
 
     private final static ThreadPoolTaskExecutor EXECUTOR = new ThreadPoolTaskExecutor();
 
@@ -40,38 +50,30 @@ public class TradeRunner implements CommandLineRunner {
         EXECUTOR.initialize();
     }
 
-    @Override
-    public void run(String... args) {
-        String startFilePath = "./grid-trade-start.json";
-        String saveFilePath = "./grid-trade-cache.json";
-        String switchFilePath = "./switch.txt";
-        Duration checkInterval = Duration.ofSeconds(10);
-
-        GridTrade gridTrade = loadGridTrade(
-                startFilePath,
-                saveFilePath,
-                tradePlatform,
-                EXECUTOR
-        );
-
-        FileUtils.writeFile(switchFilePath, "1");
-
-        while (isContinue(switchFilePath)) {
-            gridTrade.execute();
-            cache(gridTrade, saveFilePath);
-            LockSupport.parkNanos(checkInterval.toNanos());
-        }
-
-        EXECUTOR.shutdown();
+    @PostConstruct
+    public void init() {
+        gridTrade = loadGridTrade();
+        // 启动标识
+        FileUtils.writeFile(SWITCH_FILE_PATH, "1");
     }
 
-    protected GridTrade loadGridTrade(
-            String startFilePath,
-            String saveFilePath,
-            TradePlatform tradePlatform,
-            ThreadPoolTaskExecutor executor
-    ) {
-        String cacheJson = FileUtils.readFile(saveFilePath);
+    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
+    public void execute() {
+        // 是否继续执行
+        if (!isContinue()) {
+            // 停止程序
+            EXECUTOR.shutdown();
+            SpringApplication.exit(applicationContext);
+            return;
+        }
+        // 执行
+        gridTrade.execute();
+        // 缓存
+        cache();
+    }
+
+    private GridTrade loadGridTrade() {
+        String cacheJson = FileUtils.readFile(CACHE_FILE_PATH);
         GridTrade gridTrade;
         if (StringUtils.isNotBlank(cacheJson)) {
             gridTrade = JacksonUtils.readValue(cacheJson, GridTrade.class);
@@ -80,7 +82,7 @@ public class TradeRunner implements CommandLineRunner {
                 throw new RuntimeException();
             }
         } else {
-            String startJson = FileUtils.readFile(startFilePath);
+            String startJson = FileUtils.readFile(START_FILE_PATH);
             GridTradeStart gridTradeStart = JacksonUtils.readValue(startJson, GridTradeStart.class);
             if (Objects.isNull(gridTradeStart)) {
                 log.error("GridTradeStart,is null,start json:{}", startJson);
@@ -99,20 +101,20 @@ public class TradeRunner implements CommandLineRunner {
             gridTrade.init();
         }
         gridTrade.setTradePlatform(tradePlatform);
-        gridTrade.setExecutor(executor);
+        gridTrade.setExecutor(EXECUTOR);
         return gridTrade;
     }
 
-    protected boolean isContinue(String switchFilePath) {
-        return new File(switchFilePath).exists();
+    private boolean isContinue() {
+        return new File(SWITCH_FILE_PATH).exists();
     }
 
-    protected void cache(GridTrade gridTrade, String saveFilePath) {
+    private void cache() {
         String jsonCache = JacksonUtils.writeValueAsString(gridTrade);
         if (StringUtils.isBlank(jsonCache)) {
             log.error("write to json fail.");
             throw new RuntimeException();
         }
-        FileUtils.writeFile(saveFilePath, jsonCache);
+        FileUtils.writeFile(CACHE_FILE_PATH, jsonCache);
     }
 }
