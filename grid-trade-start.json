@@ -1,0 +1,9 @@
+{
+  "currency": "MX",
+  "market": "USDT",
+  "amount": 5000.0,
+  "lowPrice": 2.7102,
+  "highPrice": 3.0813,
+  "gridNum": 200,
+  "buyStart": false
+}
