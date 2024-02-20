@@ -100,7 +100,7 @@ public class GridTrade {
             try {
                 future.get();
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                log.error("trade item exception", e);
             }
         }
     }

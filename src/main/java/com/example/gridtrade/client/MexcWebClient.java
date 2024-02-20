@@ -86,7 +86,7 @@ public interface MexcWebClient {
      */
     @ResponseBody
     @DeleteMapping("/api/platform/spot/order/cancel/v2")
-    Response<?> cancelOrder();
+    Response<?> cancelOrder(@RequestParam("orderId") String orderId);
 
 
     /**
