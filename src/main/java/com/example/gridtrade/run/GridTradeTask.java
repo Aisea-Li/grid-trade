@@ -62,6 +62,7 @@ public class GridTradeTask {
         // 是否继续执行
         if (!isContinue()) {
             // 停止程序
+            log.info("do shut down");
             EXECUTOR.shutdown();
             System.exit(SpringApplication.exit(applicationContext));
             return;
