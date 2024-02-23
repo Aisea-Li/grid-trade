@@ -140,7 +140,7 @@ public class GridTradeItem {
                 .cost(selling ? buyPrice * quantity : 0)
                 .quantity(selling ? quantity : 0)
                 .tradeTimes(tradeFinishTimes)
-                .realizedIncome((sellPrice - buyPrice) * tradeFinishTimes)
+                .realizedIncome((sellPrice - buyPrice) * quantity * tradeFinishTimes)
                 .build();
     }
 }
