@@ -63,7 +63,7 @@ public class GridTradeTask {
         if (!isContinue()) {
             // 停止程序
             EXECUTOR.shutdown();
-            SpringApplication.exit(applicationContext);
+            System.exit(SpringApplication.exit(applicationContext));
             return;
         }
         // 执行
