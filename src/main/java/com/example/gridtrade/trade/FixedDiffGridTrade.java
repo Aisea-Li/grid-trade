@@ -4,10 +4,8 @@ import com.example.gridtrade.entity.dto.Income;
 import com.example.gridtrade.trade.pub.GridTrade;
 import com.example.gridtrade.trade.pub.GridTradeItem;
 import com.example.gridtrade.utils.DoubleUtils;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 @Data
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class FixedDiffGridTrade extends GridTrade {
 

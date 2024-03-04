@@ -3,11 +3,9 @@ package com.example.gridtrade.trade;
 import com.example.gridtrade.trade.pub.GridTrade;
 import com.example.gridtrade.trade.pub.GridTradeItem;
 import com.example.gridtrade.utils.DoubleUtils;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,8 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class NoUpLimitFixedRatioGridTrade extends GridTrade {
 
