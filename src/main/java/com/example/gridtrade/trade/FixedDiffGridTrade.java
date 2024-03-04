@@ -6,6 +6,7 @@ import com.example.gridtrade.trade.pub.GridTradeItem;
 import com.example.gridtrade.utils.DoubleUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 @Data
 @SuperBuilder
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class FixedDiffGridTrade extends GridTrade {
 
