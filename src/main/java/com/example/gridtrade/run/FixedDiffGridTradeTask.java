@@ -1,8 +1,9 @@
 package com.example.gridtrade.run;
 
-import com.example.gridtrade.entity.dto.GridTradeStart;
-import com.example.gridtrade.trade.GridTrade;
+import com.example.gridtrade.entity.dto.FixedDiffGridTradeStart;
+import com.example.gridtrade.trade.FixedDiffGridTrade;
 import com.example.gridtrade.trade.platform.TradePlatform;
+import com.example.gridtrade.trade.pub.GridTrade;
 import com.example.gridtrade.utils.FileUtils;
 import com.example.gridtrade.utils.JacksonUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class GridTradeTask {
+public class FixedDiffGridTradeTask {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -73,37 +74,38 @@ public class GridTradeTask {
         cache();
     }
 
-    private GridTrade loadGridTrade() {
+    private FixedDiffGridTrade loadGridTrade() {
         String cacheJson = FileUtils.readFile(CACHE_FILE_PATH);
-        GridTrade gridTrade;
+        FixedDiffGridTrade fixedDiffGridTrade;
         if (StringUtils.isNotBlank(cacheJson)) {
-            gridTrade = JacksonUtils.readValue(cacheJson, GridTrade.class);
-            if (Objects.isNull(gridTrade)) {
+            // 由缓存json恢复运行
+            fixedDiffGridTrade = JacksonUtils.readValue(cacheJson, FixedDiffGridTrade.class);
+            if (Objects.isNull(fixedDiffGridTrade)) {
                 log.error("load cache fail,cache json:{}", cacheJson);
                 throw new RuntimeException();
             }
         } else {
+            // 由启动json开始运行
             String startJson = FileUtils.readFile(START_FILE_PATH);
-            GridTradeStart gridTradeStart = JacksonUtils.readValue(startJson, GridTradeStart.class);
-            if (Objects.isNull(gridTradeStart)) {
+            FixedDiffGridTradeStart fixedDiffGridTradeStart = JacksonUtils.readValue(startJson, FixedDiffGridTradeStart.class);
+            if (Objects.isNull(fixedDiffGridTradeStart)) {
                 log.error("GridTradeStart,is null,start json:{}", startJson);
                 throw new RuntimeException();
             }
-            gridTrade = GridTrade.builder()
-                    .currency(gridTradeStart.getCurrency())
-                    .market(gridTradeStart.getMarket())
-                    .amount(gridTradeStart.getAmount())
-                    .lowPrice(gridTradeStart.getLowPrice())
-                    .highPrice(gridTradeStart.getHighPrice())
-                    .gridNum(gridTradeStart.getGridNum())
-                    .buyStart(gridTradeStart.getBuyStart())
-                    .tradePlatform(tradePlatform)
+            fixedDiffGridTrade = FixedDiffGridTrade.builder()
+                    .currency(fixedDiffGridTradeStart.getCurrency())
+                    .market(fixedDiffGridTradeStart.getMarket())
+                    .amount(fixedDiffGridTradeStart.getAmount())
+                    .lowPrice(fixedDiffGridTradeStart.getLowPrice())
+                    .highPrice(fixedDiffGridTradeStart.getHighPrice())
+                    .gridNum(fixedDiffGridTradeStart.getGridNum())
+                    .buyStart(fixedDiffGridTradeStart.getBuyStart())
                     .build();
-            gridTrade.init();
+            fixedDiffGridTrade.init();
         }
-        gridTrade.setTradePlatform(tradePlatform);
-        gridTrade.setExecutor(EXECUTOR);
-        return gridTrade;
+        fixedDiffGridTrade.setTradePlatform(tradePlatform);
+        fixedDiffGridTrade.setExecutor(EXECUTOR);
+        return fixedDiffGridTrade;
     }
 
     private boolean isContinue() {

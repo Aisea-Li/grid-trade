@@ -1,4 +1,4 @@
-package com.example.gridtrade.trade;
+package com.example.gridtrade.trade.pub;
 
 import com.example.gridtrade.entity.dto.Income;
 import com.example.gridtrade.entity.dto.TradeOrder;

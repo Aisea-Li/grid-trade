@@ -3,7 +3,7 @@ package com.example.gridtrade.entity.dto;
 import lombok.Data;
 
 @Data
-public class GridTradeStart {
+public class FixedDiffGridTradeStart {
     private String currency;
     private String market;
     private Double amount;
