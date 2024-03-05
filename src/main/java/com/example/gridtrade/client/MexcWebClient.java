@@ -80,7 +80,7 @@ public interface MexcWebClient {
 
 
     /**
-     * 全部撤单
+     * 全部/单个撤单
      *
      * @return
      */
