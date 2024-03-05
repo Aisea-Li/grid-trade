@@ -1,8 +1,12 @@
 package com.example.gridtrade.trade.pub;
 
 import com.example.gridtrade.entity.dto.Income;
+import com.example.gridtrade.trade.FixedDiffGridTrade;
+import com.example.gridtrade.trade.FixedRatioGridTrade;
 import com.example.gridtrade.trade.platform.TradePlatform;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +25,14 @@ import java.util.concurrent.Future;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes(value = {
+        @JsonSubTypes.Type(value = FixedDiffGridTrade.class, name = "FIXED_DIFF_GRID_TRADE"),
+        @JsonSubTypes.Type(value = FixedRatioGridTrade.class, name = "FIXED_RATIO_GRID_TRADE"),
+})
 public abstract class GridTrade {
+
+    protected int code;
 
     protected String currency;
 
@@ -53,6 +64,8 @@ public abstract class GridTrade {
     protected List<GridTradeItem> gridList = new ArrayList<>();
 
     public abstract void init();
+
+    public abstract String getType();
 
     public void execute() {
         if (!tradePlatform.refreshCurrentOrder(currency, market, gridNum * 2)) {

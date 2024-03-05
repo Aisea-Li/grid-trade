@@ -71,7 +71,7 @@ public class GridTradeItem {
         tradeOrder = tradePlatform.queryOrder(currentOrderId, TradeOrderType.LIMIT_ORDER);
         // 订单不存在
         if (Objects.isNull(tradeOrder)) {
-            log.error("trade order not exist,code:{},current order id:{}", code, currentOrderId);
+            log.error("trade order not exist,{}_{}_{},current order id:{}", currency, market, code, currentOrderId);
             return;
         }
         TradeStatus status = tradeOrder.getStatus();
@@ -81,7 +81,7 @@ public class GridTradeItem {
         }
         // 订单是否完成
         if (!TradeStatus.FILLED.equals(status)) {
-            log.error("order trade state has problem,code:{},current order id:{},status:{}", code, currentOrderId, status);
+            log.error("order trade state has problem,{}_{}_{},current order id:{},status:{}", currency, market, code, currentOrderId, status);
             return;
         }
         // 订单已完成 切换交易方向 重新下单
@@ -92,10 +92,10 @@ public class GridTradeItem {
         } else if (TradeType.SELL.equals(tradeType)) {
             // 卖出完成 日志记录完成 挂单买入
             tradeFinishTimes++;
-            log.info("sell finish,code:{},order id:{},trade finish times:{}", code, currentOrderId, tradeFinishTimes);
+            log.info("sell finish,{}_{}_{},order id:{},trade finish times:{}", currency, market, code, currentOrderId, tradeFinishTimes);
             buy();
         } else {
-            log.error("order trade type has problem,trade type:{}", tradeType);
+            log.error("order trade type has problem,{}_{}_{},order id:{},trade type:{}", currency, market, code, currentOrderId, tradeType);
         }
     }
 
@@ -109,12 +109,12 @@ public class GridTradeItem {
                 quantity
         );
         if (StringUtils.isBlank(orderId)) {
-            log.error("buy,fail,code:{},order id:{}", code, currentOrderId);
+            log.error("buy,fail,{}_{}_{},order id:{}", currency, market, code, currentOrderId);
             return;
         }
         currentOrderId = orderId;
         selling = false;
-        log.info("buy,code:{},order id:{}", code, currentOrderId);
+        log.info("buy,{}_{}_{},order id:{}", currency, market, code, currentOrderId);
     }
 
     private void sell() {
@@ -127,12 +127,12 @@ public class GridTradeItem {
                 quantity
         );
         if (StringUtils.isBlank(orderId)) {
-            log.error("sell,fail,code:{},order id:{}", code, currentOrderId);
+            log.error("sell,fail,{}_{}_{},order id:{}", currency, market, code, currentOrderId);
             return;
         }
         currentOrderId = orderId;
         selling = true;
-        log.info("sell,code:{},order id:{}", code, currentOrderId);
+        log.info("sell,{}_{}_{},order id:{}", currency, market, code, currentOrderId);
     }
 
     public Income getIncome() {

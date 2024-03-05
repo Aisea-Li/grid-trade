@@ -1,6 +1,7 @@
 package com.example.gridtrade.trade;
 
 import com.example.gridtrade.entity.dto.Income;
+import com.example.gridtrade.entity.enums.GridTradeType;
 import com.example.gridtrade.trade.pub.GridTrade;
 import com.example.gridtrade.trade.pub.GridTradeItem;
 import com.example.gridtrade.utils.DoubleUtils;
@@ -56,6 +57,11 @@ public class FixedDiffGridTrade extends GridTrade {
             gridList.add(item);
             prePrice = sellPrice;
         }
+    }
+
+    @Override
+    public String getType() {
+        return GridTradeType.FIXED_DIFF_GRID_TRADE.name();
     }
 
     public Income getIncome() {

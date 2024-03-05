@@ -46,4 +46,14 @@ public class FileUtils {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 文件是否存在
+     *
+     * @param filePath
+     * @return
+     */
+    public static boolean exists(String filePath) {
+        return new File(filePath).exists();
+    }
 }

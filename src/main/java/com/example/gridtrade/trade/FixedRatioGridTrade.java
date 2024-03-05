@@ -1,5 +1,6 @@
 package com.example.gridtrade.trade;
 
+import com.example.gridtrade.entity.enums.GridTradeType;
 import com.example.gridtrade.trade.pub.GridTrade;
 import com.example.gridtrade.trade.pub.GridTradeItem;
 import com.example.gridtrade.utils.DoubleUtils;
@@ -11,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 无上限固定比例网格交易
+ * 固定比例网格交易
  */
 
 @Slf4j
@@ -19,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class NoUpLimitFixedRatioGridTrade extends GridTrade {
+public class FixedRatioGridTrade extends GridTrade {
 
     protected double fixedRatio;
 
@@ -52,5 +53,10 @@ public class NoUpLimitFixedRatioGridTrade extends GridTrade {
             prePrice = sellPrice;
         }
         highPrice = prePrice;
+    }
+
+    @Override
+    public String getType() {
+        return GridTradeType.FIXED_RATIO_GRID_TRADE.name();
     }
 }
