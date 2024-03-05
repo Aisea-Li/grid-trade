@@ -12,5 +12,6 @@ public class GridTradeStart {
     private Double highPrice;
     private Double fixedRatio;
     private Integer gridNum;
+    private Integer scale;
     private Boolean buyStart = false;
 }

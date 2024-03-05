@@ -131,6 +131,7 @@ public class GridTradeTask {
                         .lowPrice(gridTradeStart.getLowPrice())
                         .highPrice(gridTradeStart.getHighPrice())
                         .gridNum(gridTradeStart.getGridNum())
+                        .scale(gridTradeStart.getScale())
                         .buyStart(gridTradeStart.getBuyStart())
                         .build();
             } else if (StringUtils.equals(GridTradeType.FIXED_RATIO_GRID_TRADE.name(), gridTradeStart.getType())) {
@@ -141,6 +142,7 @@ public class GridTradeTask {
                         .lowPrice(gridTradeStart.getLowPrice())
                         .fixedRatio(gridTradeStart.getFixedRatio())
                         .gridNum(gridTradeStart.getGridNum())
+                        .scale(gridTradeStart.getScale())
                         .buyStart(gridTradeStart.getBuyStart())
                         .build();
             } else {

@@ -37,7 +37,7 @@ public class FixedRatioGridTrade extends GridTrade {
         double prePrice = lowPrice;
         for (int i = 0; i < gridNum; i++) {
             double buyPrice = DoubleUtils.scaleOfRoundDown(prePrice, scale);
-            double sellPrice = DoubleUtils.scaleOfRoundDown(prePrice * fixedRatio, scale);
+            double sellPrice = DoubleUtils.scaleOfRoundDown(prePrice * (1 + fixedRatio), scale);
             double quantity = DoubleUtils.scaleOfRoundDown(gridAmount / buyPrice, scale);
             GridTradeItem item = GridTradeItem.builder()
                     .code(i)
