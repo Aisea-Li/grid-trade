@@ -73,7 +73,7 @@ public class GridTradeTask {
         FileUtils.writeFile(SWITCH_FILE_PATH, "1");
     }
 
-    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
     public void execute() {
         // 是否继续执行
         if (!isContinue()) {
