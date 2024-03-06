@@ -31,6 +31,8 @@ public class MexcTradePlatform extends TradePlatform {
     // 最大100
     private final static int PAGE_SIZE = 100;
 
+    private final static int RETRY_TIMES = 3;
+
     @Override
     public TradeOrder queryOrder(String orderId, TradeOrderType tradeOrderType) {
         Response<Order> res = mexcWebClient.queryOrderDetail(orderId, tradeOrderType.getCode());
@@ -50,12 +52,16 @@ public class MexcTradePlatform extends TradePlatform {
                 .price(String.valueOf(price))
                 .quantity(String.valueOf(quantity))
                 .build();
-        Response<String> res = mexcWebClient.placeOrder(req);
-        if (ResponseUtils.hasData(res)) {
-            return res.getData();
-        } else {
-            return null;
+        Response<String> res = null;
+        for (int i = 0; i < RETRY_TIMES; i++) {
+            res = mexcWebClient.placeOrder(req);
+            if (ResponseUtils.hasData(res)) {
+                return res.getData();
+            }
+            log.warn("place order fail,try times:{},res:{}", i, res);
         }
+        log.warn("place order fail,res:{}", res);
+        return null;
     }
 
     @Override
