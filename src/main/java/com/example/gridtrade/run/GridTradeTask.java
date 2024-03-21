@@ -115,6 +115,7 @@ public class GridTradeTask {
                 log.error("load cache fail,cache json:{}", cacheJson);
                 throw new RuntimeException();
             }
+            gridTrade.setTradePlatform(tradePlatform);
         } else if (FileUtils.exists(startFilePath)) {
             // 由启动json开始运行
             String startJson = FileUtils.readFile(startFilePath);
@@ -149,11 +150,11 @@ public class GridTradeTask {
                 log.error("unknown type,type:{}", gridTradeStart.getType());
                 return null;
             }
+            gridTrade.setTradePlatform(tradePlatform);
             gridTrade.init();
         } else {
             return null;
         }
-        gridTrade.setTradePlatform(tradePlatform);
         gridTrade.setExecutor(executor);
         return gridTrade;
     }
