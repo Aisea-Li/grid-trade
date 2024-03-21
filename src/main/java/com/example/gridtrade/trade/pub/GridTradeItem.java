@@ -52,12 +52,15 @@ public class GridTradeItem {
     public void checkAndTrade() {
         if (StringUtils.isBlank(currentOrderId)) {
             // 首次
-            if (buyStart || !selling) {
+            if (buyStart) {
                 // 挂单买入
                 buy();
-            } else {
+            } else if (selling) {
                 // 持仓卖出
                 sell();
+            } else {
+                // 挂单买入
+                buy();
             }
             return;
         }

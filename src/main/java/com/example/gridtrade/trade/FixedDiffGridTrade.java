@@ -60,9 +60,11 @@ public class FixedDiffGridTrade extends GridTrade {
                     .sellPrice(sellPrice)
                     .tradePlatform(tradePlatform)
                     .buyStart(buyStart)
-                    // 不是买入开始（buyStart == false） 当前价高于买价 卖出开始
-                    .selling(!buyStart && buyPrice < currentPrice)
                     .build();
+            if (!buyStart) {
+                // 当前价高于买价 买入开始 否则卖出开始
+                item.setSelling(buyPrice > currentPrice);
+            }
             gridList.add(item);
             prePrice = sellPrice;
         }
