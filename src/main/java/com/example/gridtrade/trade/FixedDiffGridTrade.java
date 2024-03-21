@@ -12,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
+
 
 /**
  * 固定差值网格交易
@@ -30,13 +32,18 @@ public class FixedDiffGridTrade extends GridTrade {
             throw new RuntimeException("currency market is any blank");
         }
         if (highPrice <= lowPrice) {
-            log.error("highPrice less than lowPrice,low price:{},high price:{}", lowPrice, highPrice);
+            log.error("highPrice less than lowPrice,currency:{},market:{},low price:{},high price:{}", currency, market, lowPrice, highPrice);
             throw new RuntimeException("highPrice <= lowPrice");
         }
         double gridAmount = amount / gridNum;
         if (gridAmount < minGridAmount) {
-            log.error("grid amount too less,grid amount:{},max gird amount:{}", gridAmount, minGridAmount);
+            log.error("grid amount too less,currency:{},market:{},grid amount:{},max gird amount:{}", currency, market, gridAmount, minGridAmount);
             throw new RuntimeException("grid amount too less");
+        }
+        Double currentPrice = tradePlatform.queryCurrentPrice(currency, market);
+        if (Objects.isNull(currentPrice)) {
+            log.error("query current price,fail,currency:{},market:{}", currency, market);
+            throw new RuntimeException("query current price fail");
         }
         double gridPriceDiff = (highPrice - lowPrice) / gridNum;
         double prePrice = lowPrice;
@@ -53,6 +60,8 @@ public class FixedDiffGridTrade extends GridTrade {
                     .sellPrice(sellPrice)
                     .tradePlatform(tradePlatform)
                     .buyStart(buyStart)
+                    // 不是买入开始（buyStart == false） 当前价高于买价 卖出开始
+                    .selling(!buyStart && buyPrice < currentPrice)
                     .build();
             gridList.add(item);
             prePrice = sellPrice;

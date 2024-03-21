@@ -21,4 +21,6 @@ public abstract class TradePlatform {
 
     public abstract String placeOrder(String currency, String market, TradeType tradeType, TradeOrderType tradeOrderType, double price, double quantity);
 
+    public abstract Double queryCurrentPrice(String currency, String market);
+
 }

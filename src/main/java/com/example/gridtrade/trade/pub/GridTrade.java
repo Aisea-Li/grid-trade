@@ -44,6 +44,8 @@ public abstract class GridTrade {
 
     protected double highPrice;
 
+    protected double startPrice;
+
     protected int gridNum;
 
     protected boolean buyStart = true;

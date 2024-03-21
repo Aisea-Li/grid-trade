@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Objects;
+
 /**
  * 固定比例网格交易
  */
@@ -34,6 +36,11 @@ public class FixedRatioGridTrade extends GridTrade {
             log.error("grid amount too less,grid amount:{},min gird amount:{}", gridAmount, minGridAmount);
             throw new RuntimeException("grid amount too less");
         }
+        Double currentPrice = tradePlatform.queryCurrentPrice(currency, market);
+        if (Objects.isNull(currentPrice)) {
+            log.error("query current price,fail,currency:{},market:{}", currency, market);
+            throw new RuntimeException("query current price fail");
+        }
         double prePrice = lowPrice;
         for (int i = 0; i < gridNum; i++) {
             double buyPrice = DoubleUtils.scaleOfRoundDown(prePrice, scale);
@@ -48,6 +55,8 @@ public class FixedRatioGridTrade extends GridTrade {
                     .sellPrice(sellPrice)
                     .tradePlatform(tradePlatform)
                     .buyStart(buyStart)
+                    // 不是买入开始（buyStart == false） 当前价高于买价 卖出开始
+                    .selling(!buyStart && buyPrice < currentPrice)
                     .build();
             gridList.add(item);
             prePrice = sellPrice;

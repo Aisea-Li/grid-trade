@@ -6,6 +6,7 @@ import com.example.gridtrade.entity.enums.TradeOrderType;
 import com.example.gridtrade.entity.enums.TradeType;
 import com.example.gridtrade.entity.request.PlaceOrderReq;
 import com.example.gridtrade.entity.response.CurrentOrder;
+import com.example.gridtrade.entity.response.KLineRes;
 import com.example.gridtrade.entity.response.Order;
 import com.example.gridtrade.entity.response.Page;
 import com.example.gridtrade.entity.response.Response;
@@ -13,10 +14,12 @@ import com.example.gridtrade.trade.platform.TradePlatform;
 import com.example.gridtrade.utils.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -75,6 +78,31 @@ public class MexcTradePlatform extends TradePlatform {
             this.currentOrderCache.put(currentOrder.getId(), currentOrder);
         }
         return true;
+    }
+
+    @Override
+    public Double queryCurrentPrice(String currency, String market) {
+        Date endDate = new Date();
+        Date startDate = DateUtils.addDays(endDate, -7);
+        String start = String.valueOf(startDate.getTime());
+        String end = String.valueOf(endDate.getTime());
+        String interval = "Day1";
+        String openPriceMode = "LAST_CLOSE";
+        String symbol = String.format("%s_%s", currency, market);
+        Response<KLineRes> res = mexcWebClient.queryKLine(
+                start,
+                end,
+                interval,
+                openPriceMode,
+                symbol
+        );
+        if (!ResponseUtils.hasData(res)) {
+            log.warn("queryKLine,fail,res:{}", res);
+            return null;
+        }
+        KLineRes kLineRes = res.getData();
+        List<Double> closePriceList = kLineRes.getC();
+        return closePriceList.get(closePriceList.size() - 1);
     }
 
     protected List<TradeOrder> queryCurrentOrder(String currency, String market, int num) {

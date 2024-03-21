@@ -3,6 +3,7 @@ package com.example.gridtrade.client;
 import com.example.gridtrade.entity.request.PlaceOrderReq;
 import com.example.gridtrade.entity.response.CurrentOrder;
 import com.example.gridtrade.entity.response.HistoryOrder;
+import com.example.gridtrade.entity.response.KLineRes;
 import com.example.gridtrade.entity.response.Order;
 import com.example.gridtrade.entity.response.Page;
 import com.example.gridtrade.entity.response.Response;
@@ -76,6 +77,21 @@ public interface MexcWebClient {
     Response<Order> queryOrderDetail(
             @RequestParam("orderId") String orderId,
             @RequestParam("orderType") String orderType
+    );
+
+    /**
+     * k线查询
+     *
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/api/platform/spot/market/kline")
+    Response<KLineRes> queryKLine(
+            @RequestParam("start") String start,
+            @RequestParam("end") String end,
+            @RequestParam("interval") String interval,
+            @RequestParam("openPriceMode") String openPriceMode,
+            @RequestParam("symbol") String symbol
     );
 
 
